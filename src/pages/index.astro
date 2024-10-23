@@ -1,0 +1,39 @@
+---
+import type { IFrontmatter } from 'astro-boilerplate-components';
+
+import { CTA } from '@/partials/CTA';
+import { Hero } from '@/partials/Hero';
+import { ProjectList } from '@/partials/ProjectList';
+import { RecentPosts } from '@/partials/RecentPosts';
+import { RecentPostMe } from '@/partials/RecentPostMe';
+import { Sponsors } from '@/partials/Sponsors';
+import Wrapper from '../components/Wrapper.astro';
+import Base from '@/templates/Base.astro';
+import { AppConfig } from '@/utils/AppConfig';
+import { sortByDate } from '@/utils/Posts';
+import { CardCarousel2 } from '@/partials/CardCarousel2'; // Nhập Carousel
+
+const allPosts = await Astro.glob<IFrontmatter>('./posts/*.md');
+const allPostMe = await Astro.glob<IFrontmatter>('./postme/*.md');
+const sortedPosts = sortByDate(allPosts);
+const lastThreePosts = sortedPosts.slice(1, 4);
+
+const sortedPostMe = sortByDate(allPostMe);
+const lastThreePostMe = sortedPostMe.slice(1, 4);
+
+// Tải dữ liệu cho carousel
+const slides = await import('./slide.json'); // Đường dẫn tới tệp JSON
+
+const { title } = AppConfig;
+const { description } = AppConfig;
+---
+
+<Base head={{ title, description }}>
+  <Hero />
+  <Sponsors />
+  <ProjectList />
+  <CardCarousel2 /> <!-- Thêm Carousel vào đây -->
+  <RecentPosts postList={lastThreePosts} />
+   <RecentPostMe postList={lastThreePostMe} />
+  <CTA />
+</Base>
